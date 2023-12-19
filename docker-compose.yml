@@ -1,0 +1,60 @@
+version: "3.8"
+services: 
+  mysql:
+    image: mysql:latest
+    restart: always
+    container_name: atm_mysql
+    hostname: atm-mysql
+    environment : 
+      - MYSQL_ROOT_PASSWORD=richardatm
+    volumes :
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - var-lib-mysql:/var/lib/mysql
+    working_dir : /var/lib
+    ports :
+      - 3306:3306
+    networks:
+      - atm_network
+
+
+  atm-client:
+    depends_on:
+      - atm-server
+    image: node:19.9.0
+    container_name: atm-client
+    env_file: 
+      - ./client/.env
+    volumes:
+      - ./client:/var/lib/atm-client:rw
+    working_dir: /var/lib/atm-client
+    ports:
+      - 3000:3000
+    stdin_open: true
+    tty: true
+    command: bash -c "npm install --legacy-peer-deps && DANGEROUSLY_DISABLE_HOST_CHECK=true npm start"
+    networks:
+      - atm_network
+        
+    
+  atm-server:
+    image: node:19.9.0
+    restart: always
+    container_name: atm-server
+    env_file: 
+      - ./server/.env
+    volumes:
+      - ./server:/var/lib/atm-server:rw
+    working_dir: /var/lib/atm-server
+    ports:
+      - 5000:5000
+    command: bash -c "npm install && npm start"
+    networks:
+      - atm_network
+
+volumes :
+  var-lib-mysql:
+
+networks:
+  atm_network:
+
+
