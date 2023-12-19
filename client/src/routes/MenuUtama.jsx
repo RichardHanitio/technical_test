@@ -2,45 +2,65 @@ import React from 'react'
 import {useTheme} from "@mui/material/styles";
 import { useNavigate } from 'react-router-dom';
 
-import { Typography, Button, Container, Box } from '@mui/material';
+import { Typography, Container, Box } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2"
+
+import Logo from '../components/Logo';
 
 const MenuUtama = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const menus = [
+    {
+      name : "INFO SALDO",
+      path : "/info-saldo"
+    },
+    {
+      name : "TRANSFER",
+      path : "/transfer"
+    },
+    {
+      name : "TARIK DANA",
+      path : "/tarik-dana"
+    },
+    {
+      name : "RIWAYAT TRANSAKSI",
+      path : "/riwayat-transaksi"
+    },
+    {
+      name : "KELUAR",
+      path : "/keluar"
+    }
+  ]
   return (
-    <>
-      <Container sx={{backgroundColor : theme.palette.primary.main, minWidth : "100vw", height : "100vh", flexDirection : "column", alignItems : "center"}}>
-        <Grid container>
-          <Grid sx={{backgroundColor : "pink",alignItems : "center", justifyContent : "center"}}>
-            <img src="/assets/R-logo.png" alt="bank logo"/>
-            <Typography sx={{color : "white"}}>Bank of Richard</Typography>
-          </Grid>
-        </Grid>
+    <Container fixed sx={{backgroundColor : theme.palette.primary.main, height : "100vh", minWidth : "100vw", display : "flex", flexDirection : "column", alignItems : "center", justifyContent : "center"}}>
+      <Grid container sx={{width : "80%", height : "95%", flexDirection : "column", alignItems : "center"}}>
         <Grid>
-          <Typography variant="h1" sx={{color : "white"}}>Selamat datang, John</Typography>
-          <Typography variant="body1" sx={{color : "white"}}>Silakan pilih apa yang ingin Anda lakukan dengan akun Anda</Typography>
+          <Logo width="220px" height="90px" imageSize="50px" orientation="horizontal" textVariant="h4"/>
         </Grid>
-        <Grid sx={{backgroundColor : "blue"}}>
-          <Grid sx={{backgroundColor : "pink", width : 200, height : 100, cursor : "pointer"}} onClick={() => navigate("/info-saldo")}>
-            <Typography variant="body1">INFO SALDO</Typography>
-          </Grid>
-          <Grid sx={{backgroundColor : "pink", width : 200, height : 100, cursor : "pointer"}} onClick={() => navigate("/transfer")}>
-            <Typography variant="body1">TRANSFER</Typography>
-          </Grid>
-          <Grid sx={{backgroundColor : "pink", width : 200, height : 100, cursor : "pointer"}} onClick={() => navigate("/tarik-dana")}>
-            <Typography variant="body1">TARIK DANA</Typography>
-          </Grid>
-          <Grid sx={{backgroundColor : "pink", width : 200, height : 100, cursor : "pointer"}} onClick={() => navigate("/riwayat-transaksi")}>
-            <Typography variant="body1">RIWAYAT TRANSAKSI</Typography>
-          </Grid>
-          <Grid sx={{backgroundColor : "pink", width : 200, height : 100, cursor : "pointer"}} onClick={() => navigate("/keluar")}>
-            <Typography variant="body1">KELUAR</Typography>
-          </Grid>
+        <Grid sx={{height : "130px", display : "flex", flexDirection : "column", alignItems : "center", justifyContent : "space-evenly", mb : 3}}>
+          <Typography variant="h2" sx={{color : "white"}}>Selamat datang, John</Typography>
+          <Typography variant="body2" sx={{color : "white"}}>Silakan pilih apa yang ingin Anda lakukan dengan akun Anda</Typography>
         </Grid>
-      </Container>
-    </>
+        <Grid container spacing={5} sx={{width : "100%", height : "50%"}}>
+          {
+            menus.map((menu, idx) => (
+            <Grid xs={idx<3 ? 4 : 6} sx={{display : "flex", alignItems : "center", justifyContent : "center"}} onClick={() => navigate(menu.path)}>
+              <Box sx={{borderRadius : 3, height : "100%", width : idx<3 ? "100%" : "64%", backgroundColor : "#FFE1D1", display : "flex", alignItems : "center", justifyContent : "center", cursor : "pointer", "&:hover" : {
+                backgroundColor : "#FF8748",
+                color : "white"
+              }}}>
+                <Typography variant="body1">{menu.name}</Typography>
+              </Box>
+            </Grid>
+            ))
+          }
+          
+        </Grid>
+      </Grid>
+    </Container>
   )
+    
 }
 
 export default MenuUtama

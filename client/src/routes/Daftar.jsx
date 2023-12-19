@@ -45,7 +45,6 @@ const Daftar = () => {
       return false;
     }
     if(credentials.pin==="" || credentials.pin.length > 6 || !/^\d+$/.test(credentials.pin)) {
-      console.log(!/^\d+$/.test(credentials.pin))
       setShowError({
         show : true, 
         msg : "Masukkanlah pin yang benar [0-9a-z]"
@@ -59,7 +58,6 @@ const Daftar = () => {
     e.preventDefault();
     const isValidCredentials = checkCredentials(credentials);
     if(isValidCredentials) {
-      console.log(credentials)
       navigate("/")
       // try {
       //   await makeRequest({url: "/auth/register", method: "post", body : creds})
@@ -75,8 +73,6 @@ const Daftar = () => {
       // } catch(e) {
       //   openSnackbar("Error : ", e.response.data.msg)
       // }
-    } else {
-      console.log("masuk else")
     }
   }
 
@@ -86,11 +82,11 @@ const Daftar = () => {
         <ChevronLeftIcon sx={{fontSize : 40, color : "black"}}/>
       </Box>
 
-      <Grid container sx={{width : "80%", height : "95%", flexDirection : "column", alignItems : "center"}}>
+    <Grid container sx={{width : "80%", height : "95%", flexDirection : "column", alignItems : "center"}}>
         <Grid sx={{flexBasis : "10%"}}>
           <Logo width="220px" height="90px" imageSize="50px" orientation="horizontal" textVariant="h4"/>
         </Grid>
-        <Grid sx={{flexBasis : "10%", display : "flex", alignItems : "center", justifyContent : "center"}}>
+        <Grid sx={{flexBasis : "10%", display : "flex", alignItems : "center", justifyContent : "center", mt:3}}>
           <Typography variant="h2" sx={{color : "white"}}>DAFTAR</Typography>
         </Grid>
         <Grid sx={{flexBasis : "7%", backgroundColor : "#ffd4d4", width : "50%", display: showError.show ? "flex" : "none", alignItems : "center", justifyContent : "center"}}>
@@ -140,6 +136,7 @@ const Daftar = () => {
             fullWidth
             required
             value={credentials.pin}
+            placeholder="6 digit angka"
             onChange={handleCredentialChange}
           />
 
@@ -148,7 +145,7 @@ const Daftar = () => {
           </Button>
         </Grid>
         <Grid sx={{mt : 2}}>
-          <Typography sx={{typography : {xxs : "body3", md : "body2", color : "white"}}}>
+          <Typography variant="body2" sx={{color : "white"}}>
             Sudah mempunyai akun?
             <Link href="/masuk" sx={{color : "white", ml : 1, textDecoration : "underline"}}>Masuk</Link>
           </Typography> 
