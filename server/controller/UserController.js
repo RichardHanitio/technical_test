@@ -47,7 +47,7 @@ class UserController {
     }
   }
 
-  async getAllUser() {
+  async getAllUsers() {
     const [rows] = await this.pool.execute(
       "SELECT * FROM Pengguna"
     )
@@ -61,6 +61,87 @@ class UserController {
     )
     return rows.map(row => new UserModel(row.ID, row.Nama, row.Pin, row.Saldo))
   }
+
+  // async topUp(userId, amount) {
+  //   // get previous saldo
+  //   const [selectRows] = await this.pool.execute(
+  //     "SELECT Saldo from Pengguna WHERE Pengguna.ID=?",
+  //     [userId]
+  //   );
+
+  //   // check if user exists
+  //   if (selectRows.length === 0) {
+  //     return {
+  //       status : 404,
+  //       msg : "Pengguna tidak ditemukan"
+  //     }
+  //   }
+
+  //   const prevSaldo = selectRows[0].Saldo;
+
+  //   const [updateRows] = await this.pool.execute(
+  //     "UPDATE Pengguna SET Saldo=? WHERE Pengguna.ID=?",
+  //     [prevSaldo + amount, userId]
+  //   );
+    
+  //   // check if the update is successful
+  //   if (updateRows.affectedRows !== 1){
+  //     return {
+  //       status : 500,
+  //       msg : "Gagal mengisi saldo"
+  //     }
+  //   }
+
+  //   const [user] = await this.getUserById(rows.insertId);
+  //   return {
+  //     status : 200,
+  //     msg : "Saldo berhasil diisi",
+  //     user : user
+  //   };
+  // }
+
+  async topUp(userId, amount) {
+    // try {
+    //   await 
+    // }
+    // get previous saldo
+    const [selectRows] = await this.pool.execute(
+      "SELECT Saldo from Pengguna WHERE Pengguna.ID=?",
+      [userId]
+    );
+
+    // check if user exists
+    if (selectRows.length === 0) {
+      return {
+        status : 404,
+        msg : "Pengguna tidak ditemukan"
+      }
+    }
+
+    const prevSaldo = selectRows[0].Saldo;
+
+    const [updateRows] = await this.pool.execute(
+      "UPDATE Pengguna SET Saldo=? WHERE Pengguna.ID=?",
+      [prevSaldo + amount, userId]
+    );
+    
+    // check if the update is successful
+    if (updateRows.affectedRows !== 1){
+      return {
+        status : 500,
+        msg : "Gagal mengisi saldo"
+      }
+    }
+
+    const [user] = await this.getUserById(rows.insertId);
+    return {
+      status : 200,
+      msg : "Saldo berhasil diisi",
+      user : user
+    };
+  }
+
+
 }
 
 module.exports = UserController
