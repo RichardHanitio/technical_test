@@ -22,7 +22,7 @@ const InfoSaldo = () => {
           <Typography variant="h2" sx={{color : "white"}}>INFO SALDO</Typography>
         </Grid>
         <Grid container sx={{width : "100%", height : "50%", alignItems : "center", justifyContent : "center"}}>
-          <Box sx={{backgroundColor : "white", width : "50%", height : "100%", display : "flex", justifyContent : "center", alignItems : "center"}}>
+          <Box sx={{width : "50%", height : "100%", display : "flex", justifyContent : "center", alignItems : "center", backgroundColor : "white"}}>
             <Grid container sx={{width : "85%", height : "80%",flexDirection : "column"}}>
               <Grid sx={{display : "flex", justifyContent : "space-between", flexBasis : "20%"}}>
                 <Typography variant="body2">

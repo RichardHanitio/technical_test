@@ -206,7 +206,7 @@ const router = createBrowserRouter([
   { path : "/menu-utama", element : <MenuUtama />},
   { path : "/riwayat-transaksi", element : <RiwayatTransaksi />},
   { path : "/tarik-dana", element: <TarikDana />},
-  { path : "/thankyou", element: <Thankyou />},
+  { path : "/terima-kasih", element: <Thankyou />},
   { path : "/transfer", element: <Transfer />},
   { path : "*", element : <Error />}
 ])

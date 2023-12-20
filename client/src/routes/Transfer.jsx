@@ -57,7 +57,7 @@ const Transfer = () => {
     e.preventDefault();
     const isValidCredentials = checkCredentials(credentials);
     if(isValidCredentials) {
-      navigate("/menu-utama")
+      navigate("/terima-kasih")
     }
   }
 
@@ -107,7 +107,6 @@ const Transfer = () => {
             size="small"
             fullWidth
             required
-            autoFocus
             value={credentials.tujuan}
             onChange={handleCredentialChange}
           />

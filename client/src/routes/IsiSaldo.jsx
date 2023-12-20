@@ -78,6 +78,7 @@ const IsiSaldo = () => {
             size="small"
             fullWidth
             required
+            autoFocus
             value={credentials.nominal}
             onChange={handleCredentialChange}
           />
