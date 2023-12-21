@@ -1,8 +1,7 @@
 class TransactionModel {
-  constructor(idTransaksi, tanggalTransaksi, jenisTransaksi, idSumber, idTujuan, tujuanTransaksi, jumlah) {
+  constructor(idTransaksi, tanggalTransaksi, idSumber, idTujuan, tujuanTransaksi, jumlah) {
     this.idTransaksi = idTransaksi;
     this.tanggalTransaksi = tanggalTransaksi;
-    this.jenisTransaksi = jenisTransaksi;
     this.idSumber = idSumber;
     this.idTujuan = idTujuan;
     this.tujuanTransaksi = tujuanTransaksi,
@@ -13,7 +12,6 @@ class TransactionModel {
     return {
       IDTransaksi : this.idTransaksi,
       TanggalTransaksi : this.tanggalTransaksi,
-      JenisTransaksi : this.jenisTransaksi,
       IDSumber : this.idSumber,
       IDTujuan : this.idTujuan, 
       TujuanTransaksi : this.tujuanTransaksi,

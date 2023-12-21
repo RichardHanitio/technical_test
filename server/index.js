@@ -4,6 +4,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const UserRoutes = require("./routes/UserRoutes")
+const TransactionRoutes = require("./routes/TransactionRoutes")
 const errorHandlerMiddleware = require("./utils/errorHandler");
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.use(cookieParser());
 
 // routers
 app.use(UserRoutes);
+app.use(TransactionRoutes);
 
 app.get("/", (req, res) => res.send("Welcome to Richard Bank ATM API. If you catches any bug, please report them to richardhan82@gmail.com"))
 
