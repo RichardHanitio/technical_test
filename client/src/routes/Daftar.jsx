@@ -67,7 +67,8 @@ const Daftar = () => {
         enqueueSnackbar("Daftar akun berhasil!", {variant : "success"})
         navigate("/");
       } catch(e) {
-        enqueueSnackbar("Daftar akun gagal! Mohon coba lagi", {variant : "error"})
+        const errMsg = e.response.data.msg
+        enqueueSnackbar(errMsg ? errMsg : "Daftar akun gagal! Mohon coba lagi", {variant : "error"})
       }
     }
   }

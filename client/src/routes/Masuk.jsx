@@ -10,6 +10,8 @@ import {useTheme} from "@mui/material/styles";
 import {useSnackbar} from "notistack"
 
 import { makeRequest } from '../requests';
+import {useSelector, useDispatch} from "react-redux"
+import {selectAuth, login} from "../state/auth/authSlice"
 
 
 const Masuk = () => {
@@ -24,7 +26,7 @@ const Masuk = () => {
   })
   const theme = useTheme();
   const {enqueueSnackbar} = useSnackbar();
-  
+  const dispatch = useDispatch();
 
   const handleCredentialChange = (e) => {
     setCredentials({
@@ -37,21 +39,14 @@ const Masuk = () => {
     if(credentials.id==="" || !/^[0-9a-z]+$/.test(credentials.id)) {
       setShowError({
         show : true, 
-        msg : "Masukkanlah ID yang benar [0-9a-z]"
+        msg : "Isilah format ID yang benar [0-9a-z]"
       })
       return false;
     }
-    if(credentials.nama==="") {
+    if(credentials.pin==="" || credentials.pin.length !== 6 || !/^\d+$/.test(credentials.pin)) {
       setShowError({
         show : true, 
-        msg : "Masukkanlah nama yang benar"
-      })
-      return false;
-    }
-    if(credentials.pin==="" || credentials.pin.length > 6 || !/^\d+$/.test(credentials.pin)) {
-      setShowError({
-        show : true, 
-        msg : "Masukkanlah pin yang benar"
+        msg : "Isilah format pin yang benar"
       })
       return false;
     }
@@ -60,15 +55,21 @@ const Masuk = () => {
 
   const handleSubmitCredentials = async(e) => { 
     e.preventDefault();
-    console.log(credentials)
     const isValidCredentials = checkCredentials(credentials);
     if(isValidCredentials) {
       try {
-        await makeRequest({url: "/login", method: "post", body : credentials})
+        const resp = await makeRequest({url: "/login", method: "post", body : credentials})
+        const user = resp.data.user
+        dispatch(login({
+          id : user.id,
+          nama : user.nama,
+          saldo : user.saldo
+        }))
         enqueueSnackbar("Anda berhasil masuk!", {variant : "success"})
         navigate("/menu-utama");
       } catch(e) {
-        enqueueSnackbar("Anda gagal masuk! Mohon coba lagi", {variant : "error"})
+        const errMsg = e.response.data.msg
+        enqueueSnackbar(errMsg ? errMsg : "Anda gagal masuk! Mohon coba lagi", {variant : "error"})
       }
     }
     

@@ -7,17 +7,25 @@ import CloseIcon from '@mui/icons-material/Close';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Logo from '../components/Logo';
 import {useTheme} from "@mui/material/styles";
+import {useSnackbar} from "notistack"
+
+import { makeRequest } from '../requests';
+
+import {useSelector} from "react-redux"
+import {selectAuth} from "../state/auth/authSlice"
 
 const IsiSaldo = () => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
-    nominal : 0
+    amount : 0
   });
   const [showError, setShowError] = useState({
     show : false,
     msg : ""
   })
   const theme = useTheme();
+  const {enqueueSnackbar} = useSnackbar();
+  const {user} = useSelector(selectAuth)
   
   const handleCredentialChange = (e) => {
     setCredentials({
@@ -27,7 +35,7 @@ const IsiSaldo = () => {
   }
 
   const checkCredentials = (credentials) => {
-    if(credentials.nominal==="" || !/^\d+$/.test(credentials.nominal)) {
+    if(credentials.amount==="" || !/^\d+$/.test(credentials.amount)) {
       setShowError({
         show : true, 
         msg : "Masukkanlah nominal yang benar"
@@ -41,7 +49,14 @@ const IsiSaldo = () => {
     e.preventDefault();
     const isValidCredentials = checkCredentials(credentials);
     if(isValidCredentials) {
-      navigate("/menu-utama")
+      try {
+        await makeRequest({url: "/topup", method: "post", body : {id : user.id, amount : credentials.amount}})
+        enqueueSnackbar("Saldo berhasil diisi!", {variant : "success"})
+        navigate("/menu-utama");
+      } catch(e) {
+        const errMsg = e.response.data.msg
+        enqueueSnackbar(errMsg ? errMsg : "Gagal isi saldo, mohon coba lagi", {variant : "error"})
+      }
     }
   }
 
@@ -72,14 +87,14 @@ const IsiSaldo = () => {
           <TextField 
             margin="normal"
             label="Nominal" 
-            name="nominal"
+            name="amount"
             type="number"
             variant="outlined"
             size="small"
             fullWidth
             required
             autoFocus
-            value={credentials.nominal}
+            value={credentials.amount}
             onChange={handleCredentialChange}
           />
 

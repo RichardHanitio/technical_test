@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import {useTheme} from "@mui/material/styles";
 import { useNavigate } from 'react-router-dom';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -6,25 +6,46 @@ import { Typography, Container, Box} from '@mui/material';
 import Logo from '../components/Logo';
 import Grid from "@mui/material/Unstable_Grid2"
 import EnhancedTable from '../components/Tabel';
+import {useSnackbar} from "notistack"
+import { makeRequest } from '../requests';
+import {useSelector} from "react-redux"
+import {selectAuth} from "../state/auth/authSlice"
 
 const RiwayatTransaksi = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const {user} = useSelector(selectAuth)
+  const [rows, setRows] = useState([])
+  const {enqueueSnackbar} = useSnackbar();
+  useEffect(() => {
+    const fetchData = async() => {
+      try {
+        const res = await makeRequest({url : `/transactions?uid=${user.id}`})
+        const data = res.data
+        setRows(data.map((d) => createData(d.idTransaksi, d.tanggalTransaksi, d.idSumber, d.idTujuan, d.tujuanTransaksi, d.jumlah)) )
+      } catch(err) {
+        const errMsg = err.response.data.msg
+        enqueueSnackbar(errMsg ? errMsg : "Gagal memuat riwayat transaksi, mohon coba lagi", {variant : "error"})
+      }
+    }
+    fetchData();
+  }, [])
 
-  function createData(id, tanggal, nominal, idTujuan, tujuanTransfer) {
+  function createData(idTransaksi, tanggalTransaksi, idSumber, idTujuan, tujuanTransaksi, nominal) {
     return {
-      id,
-      tanggal,
-      nominal,
+      idTransaksi,
+      tanggalTransaksi,
+      idSumber,
       idTujuan,
-      tujuanTransfer,
+      tujuanTransaksi,
+      nominal,
     };
   }
   
-  const rows = [
-    createData(1, "12/12/2023", 5000000, "abc321", "Biaya uang kuliah"),
-    createData(2, "13/12/2023", 3000000, "abc001", "Biaya uang kos"),
-  ];
+  // const rows = [
+  //   createData(1, "12/12/2023", 5000000, "abc321", "Biaya uang kuliah"),
+  //   createData(2, "13/12/2023", 3000000, "abc001", "Biaya uang kos"),
+  // ];
 
   const headCells = [
     {
@@ -34,10 +55,10 @@ const RiwayatTransaksi = () => {
       label : "Tanggal"
     },
     {
-      id : "nominal",
+      id : "id-sumber",
       numeric : false,
       disablePadding : true,
-      label : "Nominal"
+      label : "ID Sumber"
     },
     {
       id : "id-tujuan",
@@ -46,10 +67,16 @@ const RiwayatTransaksi = () => {
       label : "ID Tujuan"
     },
     {
-      id : "tujuan-transfer",
+      id : "nominal",
       numeric : false,
       disablePadding : true,
-      label : "Tujuan Transfer"
+      label : "Nominal"
+    },
+    {
+      id : "tujuan-transaksi",
+      numeric : false,
+      disablePadding : true,
+      label : "Tujuan Transaksi"
     }
   ];
   

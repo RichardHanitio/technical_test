@@ -44,7 +44,7 @@ class TransactionController {
       
       const [insertRow] = await connection.execute(
         "INSERT INTO Transaksi (IDTransaksi, TanggalTransaksi, IDSumber, IDTujuan, TujuanTransaksi, Jumlah) VALUES (?,?,?,?,?,?)",
-        [idTransaksi, new Date(), idSumber, idTujuan, tujuanTransaksi, jumlah]
+        [idTransaksi, new Date(), idSumber, idTujuan, tujuanTransaksi||'', jumlah]
       );
 
       

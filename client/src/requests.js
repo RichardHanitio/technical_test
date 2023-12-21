@@ -36,7 +36,7 @@ const makeRequest = async({url, method="get", body=null, useAuthorization=false}
     url,
     method,
     headers,
-    data: encryptedBody
+    ...encryptedBody
   });        
 
   return res;

@@ -1,18 +1,19 @@
 import React from 'react'
 import {useTheme} from "@mui/material/styles";
-import { useNavigate, useEffect } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 
 import { Typography, Container, Box } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2"
 
 import Logo from '../components/Logo';
 
-import {useSnackbar} from "notistack"
+import {useSelector} from "react-redux"
+import {selectAuth} from "../state/auth/authSlice"
 
 const MenuUtama = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-
+  const {user} = useSelector(selectAuth);
 
   const menus = [
     {
@@ -43,17 +44,17 @@ const MenuUtama = () => {
           <Logo width="220px" height="90px" imageSize="50px" orientation="horizontal" textVariant="h4"/>
         </Grid>
         <Grid sx={{height : "130px", display : "flex", flexDirection : "column", alignItems : "center", justifyContent : "space-evenly", mb : 3}}>
-          <Typography variant="h2" sx={{color : "white"}}>Selamat datang, John</Typography>
+          <Typography variant="h2" sx={{color : "white"}}>Selamat datang, {user.nama}</Typography>
           <Typography variant="body2" sx={{color : "white"}}>Silakan pilih apa yang ingin Anda lakukan dengan akun Anda</Typography>
         </Grid>
         <Grid container spacing={5} sx={{width : "100%", height : "50%"}}>
           {
             menus.map((menu, idx) => (
-            <Grid xs={idx<3 ? 4 : 6} sx={{display : "flex", alignItems : "center", justifyContent : "center"}} onClick={() => navigate(menu.path)}>
+            <Grid xs={idx<3 ? 4 : 6} sx={{display : "flex", alignItems : "center", justifyContent : "center"}}>
               <Box sx={{borderRadius : 3, height : "100%", width : idx<3 ? "100%" : "64%", backgroundColor : "#FFE1D1", display : "flex", alignItems : "center", justifyContent : "center", cursor : "pointer", textAlign : "center", "&:hover" : {
                 backgroundColor : "#FF8748",
                 color : "white"
-              }}}>
+              }}} onClick={() => navigate(menu.path)}>
                 <Typography variant="body1">{menu.name}</Typography>
               </Box>
             </Grid>

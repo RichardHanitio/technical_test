@@ -1,14 +1,32 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {useTheme} from "@mui/material/styles";
 import { useNavigate } from 'react-router-dom';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { Typography, Button, Container, Box } from '@mui/material';
 import Logo from '../components/Logo';
 import Grid from "@mui/material/Unstable_Grid2"
+import {useSelector} from "react-redux"
+import {selectAuth} from "../state/auth/authSlice"
+import { makeRequest } from '../requests';
+
 
 const InfoSaldo = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const {user} = useSelector(selectAuth);
+  const [saldo, setSaldo] = useState(0)
+  useEffect(() => {
+    const fetchData = async() => {
+      try {
+        const res = await makeRequest({url : `/users?id=${user.id}`})
+        setSaldo(res.data[0].saldo)
+        console.log(res)
+      } catch(err) {
+        console.log(err)
+      }
+    }
+    fetchData();
+  }, [])
   return (
     <Container fixed sx={{backgroundColor : theme.palette.primary.main, height : "100vh", minWidth : "100vw", display : "flex", flexDirection : "column", alignItems : "center", justifyContent : "center"}}>
       <Box sx={{backgroundColor : "rgba(255,255,255,.5)", borderRadius : "50%", width : 40, height : 40, position : "absolute", left : 50, top : 30, cursor : "pointer", "&:hover" : {backgroundColor : "rgba(255,255,255,.7)"}}} onClick={() => navigate(-1)}>
@@ -26,10 +44,10 @@ const InfoSaldo = () => {
             <Grid container sx={{width : "85%", height : "80%",flexDirection : "column"}}>
               <Grid sx={{display : "flex", justifyContent : "space-between", flexBasis : "20%"}}>
                 <Typography variant="body2">
-                  John Sugawara
+                  {user.nama}
                 </Typography>
                 <Typography variant="body2">
-                  01234
+                  {user.id}
                 </Typography>
               </Grid>
               <Grid sx={{flexBasis : "60%", display : "flex", flexDirection : "column", width : "90%", alignSelf : "center"}}>
@@ -41,7 +59,7 @@ const InfoSaldo = () => {
                     Rp.
                   </Typography>
                   <Typography variant="h1">
-                    5.000.000,00
+                    {saldo}
                   </Typography>
                 </Box>
               </Grid>

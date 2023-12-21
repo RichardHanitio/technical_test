@@ -33,7 +33,7 @@ class UserController {
         msg : "Nama kosong/salah"
       }
     }
-    if (!pin || pin.length > 6 || !/^\d+$/.test(pin)) {
+    if (!pin || pin.length !== 6 || !/^\d+$/.test(pin)) {
       return {
         status : 400,
         msg : "Pin kosong/salah"
@@ -53,13 +53,17 @@ class UserController {
         user : user
       };
     } catch (err) {
+      console.log(err)
+      if (err.code==='ER_DUP_ENTRY') {
+        throw createCustomError("Gunakanlah ID yang lain", 500)
+      }
       throw createCustomError("Daftar akun gagal", 500)
     }
   }
 
   async userLogin(id, pin) {
     // check credentials
-    if (!id || !/^[0-9a-z]+$/.test(id) || !pin || pin.length > 6 || !/^\d+$/.test(pin)) {
+    if (!id || !/^[0-9a-z]+$/.test(id) || !pin || pin.length !== 6 || !/^\d+$/.test(pin)) {
       return {
         status : 401,
         msg : "Kredensial yang dimasukkan salah"
@@ -124,12 +128,12 @@ class UserController {
         "SELECT Saldo from Pengguna WHERE Pengguna.ID=?",
         [userId]
       );
-      // get previous saldo
-      const prevSaldo = selectRows[0].Saldo;
+
+      const currSaldo = parseFloat(selectRows[0].Saldo) + parseFloat(amount);
 
       const [updateRows] = await connection.execute(
-        "UPDATE Pengguna SET Saldo=? WHERE Pengguna.ID=?",
-        [prevSaldo + amount, userId]
+        "UPDATE Pengguna SET Saldo=CAST(? AS DECIMAL(18,2)) WHERE Pengguna.ID=?",
+        [currSaldo, userId]
       );
 
       // get user
@@ -174,18 +178,19 @@ class UserController {
         [userId]
       );
       // get previous saldo
-      const prevSaldo = selectRows[0].Saldo;
+      const prevSaldo = parseFloat(selectRows[0].Saldo);
       
       // check if the previous saldo can be deducted
-      if (prevSaldo <= amount) {
+      if (prevSaldo <= parseFloat(amount)) {
         return {
           status : 400,
           msg : "Saldo anda tidak cukup"
         }
       } else {
+        const currSaldo = prevSaldo - parseFloat(amount);
         const [updateRows] = await connection.execute(
           "UPDATE Pengguna SET Saldo=? WHERE Pengguna.ID=?",
-          [prevSaldo - amount, userId]
+          [currSaldo, userId]
         );
   
         // get user

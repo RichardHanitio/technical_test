@@ -7,12 +7,16 @@ import CloseIcon from '@mui/icons-material/Close';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Logo from '../components/Logo';
 import {useTheme} from "@mui/material/styles";
+import { makeRequest } from '../requests';
+import {useSnackbar} from "notistack"
+import {useSelector} from "react-redux"
+import {selectAuth} from "../state/auth/authSlice"
 
 const Transfer = () => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
-    id : "",
-    tujuan : "",
+    idTujuan : "",
+    tujuanTransaksi : "",
     jumlah : 0,
   });
   const [showError, setShowError] = useState({
@@ -20,6 +24,8 @@ const Transfer = () => {
     msg : ""
   })
   const theme = useTheme();
+  const {enqueueSnackbar} = useSnackbar();
+  const {user} = useSelector(selectAuth)
   
   const handleCredentialChange = (e) => {
     setCredentials({
@@ -29,17 +35,10 @@ const Transfer = () => {
   }
 
   const checkCredentials = (credentials) => {
-    if(credentials.id==="" || !/^[0-9a-z]+$/.test(credentials.id)) {
+    if(credentials.idTujuan==="" || !/^[0-9a-z]+$/.test(credentials.idTujuan)) {
       setShowError({
         show : true, 
         msg : "Masukkanlah ID yang benar"
-      })
-      return false;
-    }
-    if(credentials.tujuan==="") {
-      setShowError({
-        show : true, 
-        msg : "Masukkanlah tujuan transfer"
       })
       return false;
     }
@@ -57,7 +56,13 @@ const Transfer = () => {
     e.preventDefault();
     const isValidCredentials = checkCredentials(credentials);
     if(isValidCredentials) {
-      navigate("/terima-kasih")
+      try {
+        await makeRequest({url: "/transfer", method: "post", body : {idSumber : user.id, ...credentials}})
+        navigate("/terima-kasih");
+      } catch(e) {
+        const errMsg = e.response.data.msg
+        enqueueSnackbar(errMsg ? errMsg : "Gagal transfer, mohon coba lagi", {variant : "error"})
+      }
     }
   }
 
@@ -87,27 +92,26 @@ const Transfer = () => {
         <Grid sx={{flexBasis : "40%", width : "50%", display : "flex", flexDirection : "column", justifyContent : "space-evenly"}}>
           <TextField 
             margin="normal"
-            label="ID" 
-            name="id"
+            label="ID Tujuan" 
+            name="idTujuan"
             variant="outlined"
             type="text"
             size="small"
             fullWidth
             required
             autoFocus
-            value={credentials.id}
+            value={credentials.idTujuan}
             onChange={handleCredentialChange}
           />
           <TextField 
             margin="normal"
             label="Tujuan Transfer" 
-            name="tujuan"
+            name="tujuanTransaksi"
             variant="outlined"
             type="text"
             size="small"
             fullWidth
-            required
-            value={credentials.tujuan}
+            value={credentials.tujuanTransaksi}
             onChange={handleCredentialChange}
           />
           <TextField 

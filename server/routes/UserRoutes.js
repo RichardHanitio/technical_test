@@ -2,6 +2,7 @@ const express = require('express');
 const UserController = require("../controller/UserController")
 const {createCustomError} = require("../utils/customError")
 const {isAuthenticated} = require("../utils/verifyUser")
+const jwt = require("jsonwebtoken")
 
 const userController = new UserController()
 const router = express.Router()
@@ -17,15 +18,23 @@ router.post("/register", async(req, res, next) => {
 });
 
 router.post("/login", async(req, res, next) => {
-  const {id, pin} = req.body.data;
+  const {id, pin} = req.body;
   try {
     const resp = await userController.userLogin(id, pin)
-    // if it's successful, setup the session
+    // if it's successful, setup the jwt
+    console.log(resp.user)
+    let token;
     if (resp.status === 200) {
-      req.session.userId = resp.user.id,
-      req.session.userName = resp.user.name
+      token = jwt.sign({
+        id : resp.user.id,
+        nama : resp.user.nama
+      }, process.env.SECRETKEY)
     }
-    res.status(resp.status).json(resp)
+    res.status(resp.status).cookie("access_token", token, {
+      secure: true, 
+      sameSite : 'none',
+      maxAge : 1 * 60 * 60 * 1000
+    }).json(resp)
   } catch (err) {
     next(err);
   }
@@ -46,7 +55,9 @@ router.get("/users", isAuthenticated, async(req, res, next) => {
 })
 
 router.post("/topup", isAuthenticated, async(req, res, next) => {
+  console.log(req.body)
   const {id, amount} = req.body
+
   try {
     const resp = await userController.topUp(id, amount)
     res.status(resp.status).json(resp)
