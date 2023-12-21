@@ -27,6 +27,7 @@ class TransactionController {
         msg : "ID kosong"
       }
     }
+    
     if (!jumlah || jumlah < 0) {
       return {
         status : 404,

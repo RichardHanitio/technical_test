@@ -19,13 +19,32 @@ class UserController {
     })
   }
 
-  async userRegistration(id, nama, pin, saldo=0) {
-    //* add check credentials here
+  async userRegistration(id, nama, pin) {
+    // check credentials
+    if (!id || !/^[0-9a-z]+$/.test(id)) {
+      return {
+        status : 400,
+        msg : "ID kosong/salah"
+      }
+    }
+    if (!nama) {
+      return {
+        status : 400,
+        msg : "Nama kosong/salah"
+      }
+    }
+    if (!pin || pin.length > 6 || !/^\d+$/.test(pin)) {
+      return {
+        status : 400,
+        msg : "Pin kosong/salah"
+      }
+    }
     //* add hashing pin here
+    
     try {
       const [rows] = await this.pool.execute(
         "INSERT INTO Pengguna (ID, Nama, Pin, Saldo) VALUES (?,?,?,?)",
-        [id, nama, pin, saldo]
+        [id, nama, pin, 0]
       )
       const [user] = await this.getUserById(rows.insertId);
       return {
@@ -39,7 +58,13 @@ class UserController {
   }
 
   async userLogin(id, pin) {
-    //* add check credentials here
+    // check credentials
+    if (!id || !/^[0-9a-z]+$/.test(id) || !pin || pin.length > 6 || !/^\d+$/.test(pin)) {
+      return {
+        status : 401,
+        msg : "Kredensial yang dimasukkan salah"
+      }
+    }
     //* add hashing pin here
     try {
       const [user] = await this.getUserById(id)
@@ -55,6 +80,7 @@ class UserController {
         user : user
       }
     } catch (err) {
+      console.log(err)
       throw createCustomError("Masuk akun gagal", 500)
     }
   }

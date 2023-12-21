@@ -6,10 +6,14 @@ import Grid from "@mui/material/Unstable_Grid2"
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import CloseIcon from '@mui/icons-material/Close';
 import {useTheme} from "@mui/material/styles";
+import {useSnackbar} from "notistack"
+
+import { makeRequest } from '../requests';
 
 import Logo from '../components/Logo';
 
 const Daftar = () => {
+  const {enqueueSnackbar} = useSnackbar();
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     id : "",
@@ -47,7 +51,7 @@ const Daftar = () => {
     if(credentials.pin==="" || credentials.pin.length > 6 || !/^\d+$/.test(credentials.pin)) {
       setShowError({
         show : true, 
-        msg : "Masukkanlah pin yang benar [0-9a-z]"
+        msg : "Masukkanlah pin yang benar"
       })
       return false;
     }
@@ -58,21 +62,13 @@ const Daftar = () => {
     e.preventDefault();
     const isValidCredentials = checkCredentials(credentials);
     if(isValidCredentials) {
-      navigate("/")
-      // try {
-      //   await makeRequest({url: "/auth/register", method: "post", body : creds})
-      //   openSnackbar("Registration successful");
-      //   // auto login after registration
-      //   dispatch({type : "LOGIN_START"})
-      //   const res = await makeRequest({url : "/auth/login", method : "post", body : {
-      //     email : credentials.email,
-      //     password : credentials.password
-      //   }})
-      //   dispatch({type : "LOGIN_SUCCESS", payload : res.data})
-      //   navigate("/");
-      // } catch(e) {
-      //   openSnackbar("Error : ", e.response.data.msg)
-      // }
+      try {
+        await makeRequest({url: "/register", method: "post", body : credentials})
+        enqueueSnackbar("Daftar akun berhasil!", {variant : "success"})
+        navigate("/");
+      } catch(e) {
+        enqueueSnackbar("Daftar akun gagal! Mohon coba lagi", {variant : "error"})
+      }
     }
   }
 

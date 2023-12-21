@@ -1,15 +1,19 @@
 import React from 'react'
 import {useTheme} from "@mui/material/styles";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useEffect } from 'react-router-dom';
 
 import { Typography, Container, Box } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2"
 
 import Logo from '../components/Logo';
 
+import {useSnackbar} from "notistack"
+
 const MenuUtama = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+
+
   const menus = [
     {
       name : "INFO SALDO",
@@ -46,7 +50,7 @@ const MenuUtama = () => {
           {
             menus.map((menu, idx) => (
             <Grid xs={idx<3 ? 4 : 6} sx={{display : "flex", alignItems : "center", justifyContent : "center"}} onClick={() => navigate(menu.path)}>
-              <Box sx={{borderRadius : 3, height : "100%", width : idx<3 ? "100%" : "64%", backgroundColor : "#FFE1D1", display : "flex", alignItems : "center", justifyContent : "center", cursor : "pointer", "&:hover" : {
+              <Box sx={{borderRadius : 3, height : "100%", width : idx<3 ? "100%" : "64%", backgroundColor : "#FFE1D1", display : "flex", alignItems : "center", justifyContent : "center", cursor : "pointer", textAlign : "center", "&:hover" : {
                 backgroundColor : "#FF8748",
                 color : "white"
               }}}>

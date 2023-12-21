@@ -1,5 +1,5 @@
-import React, {useContext, useState, useEffect} from 'react'
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, {useState} from 'react'
+import { useNavigate } from 'react-router-dom';
 
 import {Container, Typography, Box, TextField, Button, Link} from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
@@ -7,6 +7,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Logo from '../components/Logo';
 import {useTheme} from "@mui/material/styles";
+import {useSnackbar} from "notistack"
+
+import { makeRequest } from '../requests';
+
 
 const Masuk = () => {
   const navigate = useNavigate();
@@ -19,7 +23,9 @@ const Masuk = () => {
     msg : ""
   })
   const theme = useTheme();
+  const {enqueueSnackbar} = useSnackbar();
   
+
   const handleCredentialChange = (e) => {
     setCredentials({
       ...credentials,
@@ -45,7 +51,7 @@ const Masuk = () => {
     if(credentials.pin==="" || credentials.pin.length > 6 || !/^\d+$/.test(credentials.pin)) {
       setShowError({
         show : true, 
-        msg : "Masukkanlah pin yang benar [0-9a-z]"
+        msg : "Masukkanlah pin yang benar"
       })
       return false;
     }
@@ -54,10 +60,18 @@ const Masuk = () => {
 
   const handleSubmitCredentials = async(e) => { 
     e.preventDefault();
+    console.log(credentials)
     const isValidCredentials = checkCredentials(credentials);
     if(isValidCredentials) {
-      navigate("/menu-utama")
+      try {
+        await makeRequest({url: "/login", method: "post", body : credentials})
+        enqueueSnackbar("Anda berhasil masuk!", {variant : "success"})
+        navigate("/menu-utama");
+      } catch(e) {
+        enqueueSnackbar("Anda gagal masuk! Mohon coba lagi", {variant : "error"})
+      }
     }
+    
   }
 
   return (

@@ -3,9 +3,11 @@ const dotenv = require('dotenv');
 const helmet = require("helmet");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const session = require("express-session")
 const UserRoutes = require("./routes/UserRoutes")
 const TransactionRoutes = require("./routes/TransactionRoutes")
 const errorHandlerMiddleware = require("./utils/errorHandler");
+const {isAuthenticated} = require("././utils/verifyUser")
 
 dotenv.config();
 const app = express();
@@ -21,10 +23,17 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({extended : true}))
 app.use(cookieParser());
+app.use(session({
+  secret : process.env.SECRETKEY,
+  resave : false,
+  saveUninitialized : false,
+  cookie : {secure : false},
+  maxAge : 30 * 60 * 1000,
+}))
 
 // routers
 app.use(UserRoutes);
-app.use(TransactionRoutes);
+app.use(isAuthenticated, TransactionRoutes);
 
 app.get("/", (req, res) => res.send("Welcome to Richard Bank ATM API. If you catches any bug, please report them to richardhan82@gmail.com"))
 
