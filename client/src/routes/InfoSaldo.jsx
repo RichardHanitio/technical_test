@@ -1,28 +1,35 @@
 import React, {useEffect, useState} from 'react'
-import {useTheme} from "@mui/material/styles";
 import { useNavigate } from 'react-router-dom';
+import {useSnackbar} from "notistack"
+import {useSelector} from "react-redux"
+
+import {useTheme} from "@mui/material/styles";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { Typography, Button, Container, Box } from '@mui/material';
-import Logo from '../components/Logo';
 import Grid from "@mui/material/Unstable_Grid2"
-import {useSelector} from "react-redux"
+
+import Logo from '../components/Logo';
 import {selectAuth} from "../state/auth/authSlice"
 import { makeRequest } from '../requests';
-
 
 const InfoSaldo = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const {user} = useSelector(selectAuth);
-  const [saldo, setSaldo] = useState(0)
+  const [saldo, setSaldo] = useState('-')
+  const {enqueueSnackbar} = useSnackbar();
+
   useEffect(() => {
     const fetchData = async() => {
       try {
         const res = await makeRequest({url : `/users?id=${user.id}`})
         setSaldo(res.data[0].saldo)
-        console.log(res)
       } catch(err) {
-        console.log(err)
+        let errMsg = "Gagal memuat saldo, mohon coba lagi"
+        if (err.response && err.response.data) {
+          errMsg = err.response.data.msg
+        }
+        enqueueSnackbar(errMsg, {variant : "error"})
       }
     }
     fetchData();
@@ -44,10 +51,10 @@ const InfoSaldo = () => {
             <Grid container sx={{width : "85%", height : "80%",flexDirection : "column"}}>
               <Grid sx={{display : "flex", justifyContent : "space-between", flexBasis : "20%"}}>
                 <Typography variant="body2">
-                  {user.nama}
+                  {user ? user.nama : "John Doe"}
                 </Typography>
                 <Typography variant="body2">
-                  {user.id}
+                  {user ? user.id : "id"}
                 </Typography>
               </Grid>
               <Grid sx={{flexBasis : "60%", display : "flex", flexDirection : "column", width : "90%", alignSelf : "center"}}>

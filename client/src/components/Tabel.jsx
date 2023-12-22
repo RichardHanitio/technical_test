@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import {Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel,  Paper} from "@mui/material"
 import { visuallyHidden } from '@mui/utils';
+import {useSelector} from "react-redux"
+import {selectAuth} from "../state/auth/authSlice"
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -84,7 +86,8 @@ export default function EnhancedTable({rows, headCells}) {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(true);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const {user} = useSelector(selectAuth)
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -166,6 +169,7 @@ export default function EnhancedTable({rows, headCells}) {
               {visibleRows.map((row, index) => {
                 const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
+                const formattedDate = new Date(row.tanggalTransaksi).toLocaleString()
 
                 return (
                   <TableRow
@@ -184,11 +188,15 @@ export default function EnhancedTable({rows, headCells}) {
                       padding="none"
                       align="center"
                     >
-                      {row.tanggal}
+                      {formattedDate}
                     </TableCell>
-                    <TableCell align="center">{row.nominal}</TableCell>
+                    <TableCell align="center">{row.idSumber}</TableCell>
                     <TableCell align="center">{row.idTujuan}</TableCell>
-                    <TableCell align="center">{row.tujuanTransfer}</TableCell>
+                    <TableCell align="center">{row.tujuanTransaksi}</TableCell>
+                    <TableCell align="center" sx={{color : user.id === row.idSumber ? "red" : "green"}}>
+                      {user.id === row.idSumber ? "-" : "+"}
+                      {row.jumlah}
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -205,13 +213,18 @@ export default function EnhancedTable({rows, headCells}) {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[10, 15, 20]}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
+          sx={{
+            ".MuiSvgIcon-root" : {
+              color : "black",
+            }
+          }}
         />
       </Paper>
     </Box>

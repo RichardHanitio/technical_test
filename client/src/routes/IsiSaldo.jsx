@@ -1,18 +1,18 @@
 import React, {useState} from 'react'
 import { useNavigate} from 'react-router-dom';
+import {useSelector} from "react-redux"
+import {useSnackbar} from "notistack"
 
 import {Container, Typography, Box, TextField, Button} from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 import CloseIcon from '@mui/icons-material/Close';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import Logo from '../components/Logo';
 import {useTheme} from "@mui/material/styles";
-import {useSnackbar} from "notistack"
 
 import { makeRequest } from '../requests';
-
-import {useSelector} from "react-redux"
 import {selectAuth} from "../state/auth/authSlice"
+import Logo from '../components/Logo';
+
 
 const IsiSaldo = () => {
   const navigate = useNavigate();
@@ -54,8 +54,11 @@ const IsiSaldo = () => {
         enqueueSnackbar("Saldo berhasil diisi!", {variant : "success"})
         navigate("/menu-utama");
       } catch(e) {
-        const errMsg = e.response.data.msg
-        enqueueSnackbar(errMsg ? errMsg : "Gagal isi saldo, mohon coba lagi", {variant : "error"})
+        let errMsg = "Gagal isi saldo, mohon coba lagi" 
+        if (e.response && e.response.data){
+          errMsg = e.response.data.msg
+        }
+        enqueueSnackbar(errMsg, {variant : "error"})
       }
     }
   }

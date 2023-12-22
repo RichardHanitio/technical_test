@@ -1,15 +1,16 @@
 import React, {useState} from 'react'
 import { useNavigate} from 'react-router-dom';
+import {useSnackbar} from "notistack"
+import {useSelector} from "react-redux"
 
 import {Container, Typography, Box, TextField, Button} from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 import CloseIcon from '@mui/icons-material/Close';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import Logo from '../components/Logo';
 import {useTheme} from "@mui/material/styles";
+
+import Logo from '../components/Logo';
 import { makeRequest } from '../requests';
-import {useSnackbar} from "notistack"
-import {useSelector} from "react-redux"
 import {selectAuth} from "../state/auth/authSlice"
 
 const Transfer = () => {
@@ -60,8 +61,11 @@ const Transfer = () => {
         await makeRequest({url: "/transfer", method: "post", body : {idSumber : user.id, ...credentials}})
         navigate("/terima-kasih");
       } catch(e) {
-        const errMsg = e.response.data.msg
-        enqueueSnackbar(errMsg ? errMsg : "Gagal transfer, mohon coba lagi", {variant : "error"})
+        let errMsg = "Gagal transfer, mohon coba lagi"
+        if (e.response && e.response.data) {
+          errMsg = e.response.data.msg
+        }
+        enqueueSnackbar(errMsg, {variant : "error"})
       }
     }
   }

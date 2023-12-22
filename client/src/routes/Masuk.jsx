@@ -1,18 +1,18 @@
 import React, {useState} from 'react'
 import { useNavigate } from 'react-router-dom';
+import {useSelector, useDispatch} from "react-redux"
+import {useSnackbar} from "notistack"
 
 import {Container, Typography, Box, TextField, Button, Link} from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 import CloseIcon from '@mui/icons-material/Close';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import Logo from '../components/Logo';
 import {useTheme} from "@mui/material/styles";
-import {useSnackbar} from "notistack"
 
+import Logo from '../components/Logo';
 import { makeRequest } from '../requests';
-import {useSelector, useDispatch} from "react-redux"
 import {selectAuth, login} from "../state/auth/authSlice"
-
+import { getUser } from "../requests"
 
 const Masuk = () => {
   const navigate = useNavigate();
@@ -58,21 +58,18 @@ const Masuk = () => {
     const isValidCredentials = checkCredentials(credentials);
     if(isValidCredentials) {
       try {
-        const resp = await makeRequest({url: "/login", method: "post", body : credentials})
-        const user = resp.data.user
-        dispatch(login({
-          id : user.id,
-          nama : user.nama,
-          saldo : user.saldo
-        }))
+        await makeRequest({url: "/login", method: "post", body : credentials})
+        dispatch(login(getUser()))
         enqueueSnackbar("Anda berhasil masuk!", {variant : "success"})
         navigate("/menu-utama");
       } catch(e) {
-        const errMsg = e.response.data.msg
-        enqueueSnackbar(errMsg ? errMsg : "Anda gagal masuk! Mohon coba lagi", {variant : "error"})
+        let errMsg = "Anda gagal masuk! Mohon coba lagi"
+        if(e.response && e.response.data){
+          errMsg = e.response.data.msg
+        }
+        enqueueSnackbar(errMsg, {variant : "error"})
       }
-    }
-    
+    } 
   }
 
   return (

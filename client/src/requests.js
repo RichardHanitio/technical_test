@@ -1,26 +1,17 @@
 import axios from "axios";
-import CryptoJS from "crypto-js"
+import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
 
 axios.defaults.baseURL = process.env.REACT_APP_BASEURL;
 axios.defaults.withCredentials = true;
 
-const encryptData = (data) => {
-  try {
-    // return CryptoJS.AES.encrypt(JSON.stringify(data), process.env.REACT_APP_SECRET_KEY).toString();
-    return data
-  } catch(e) {
-    return e;
-  }
-}
-
-const decryptData = (data) => {
-  // return CryptoJS.AES.decrypt(data, process.env.REACT_APP_SECRET_KEY).toString(CryptoJS.enc.Utf8);
-  return data
-}
-
 const getUser = () => {
-  // return (localStorage && localStorage.user) ? localStorage.user : null;
-  return
+  const jwt_token = Cookies.get("access_token");
+  let decodedToken;
+  if (jwt_token) {
+    decodedToken = jwtDecode(jwt_token)
+  }
+  return decodedToken ? decodedToken : null;
 }
 
 const makeRequest = async({url, method="get", body=null, useAuthorization=false}) => {
@@ -28,19 +19,15 @@ const makeRequest = async({url, method="get", body=null, useAuthorization=false}
     Authorization : "Bearer " + getUser()
   } : {};
 
-  const encryptedBody = {
-    data : encryptData(body)
-  }
-
   const res = await axios({
     url,
     method,
     headers,
-    ...encryptedBody
+    data : body
   });        
 
   return res;
 };
 
 
-export {makeRequest, encryptData, decryptData, getUser};
+export {makeRequest, getUser};

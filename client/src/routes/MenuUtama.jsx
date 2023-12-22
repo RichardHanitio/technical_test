@@ -1,13 +1,12 @@
 import React from 'react'
-import {useTheme} from "@mui/material/styles";
 import { useNavigate} from 'react-router-dom';
+import {useSelector} from "react-redux"
 
+import {useTheme} from "@mui/material/styles";
 import { Typography, Container, Box } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2"
 
 import Logo from '../components/Logo';
-
-import {useSelector} from "react-redux"
 import {selectAuth} from "../state/auth/authSlice"
 
 const MenuUtama = () => {
@@ -44,7 +43,7 @@ const MenuUtama = () => {
           <Logo width="220px" height="90px" imageSize="50px" orientation="horizontal" textVariant="h4"/>
         </Grid>
         <Grid sx={{height : "130px", display : "flex", flexDirection : "column", alignItems : "center", justifyContent : "space-evenly", mb : 3}}>
-          <Typography variant="h2" sx={{color : "white"}}>Selamat datang, {user.nama}</Typography>
+          <Typography variant="h2" sx={{color : "white"}}>Selamat datang, {user ? user.nama : "John Doe"} </Typography>
           <Typography variant="body2" sx={{color : "white"}}>Silakan pilih apa yang ingin Anda lakukan dengan akun Anda</Typography>
         </Grid>
         <Grid container spacing={5} sx={{width : "100%", height : "50%"}}>

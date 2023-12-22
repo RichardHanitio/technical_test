@@ -22,7 +22,6 @@ router.post("/login", async(req, res, next) => {
   try {
     const resp = await userController.userLogin(id, pin)
     // if it's successful, setup the jwt
-    console.log(resp.user)
     let token;
     if (resp.status === 200) {
       token = jwt.sign({
@@ -40,6 +39,13 @@ router.post("/login", async(req, res, next) => {
   }
 });
 
+router.get("/logout", (req, res, next) => {
+  res.clearCookie("access_token");
+  return res.status(200).json({
+    msg : "Logout successful",
+  })
+});
+
 router.get("/users", isAuthenticated, async(req, res, next) => {
   const id = req.query.id
   try {
@@ -55,7 +61,6 @@ router.get("/users", isAuthenticated, async(req, res, next) => {
 })
 
 router.post("/topup", isAuthenticated, async(req, res, next) => {
-  console.log(req.body)
   const {id, amount} = req.body
 
   try {

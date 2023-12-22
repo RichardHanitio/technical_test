@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import {useSnackbar} from "notistack"
 
 import {Container, Typography, Box, TextField, Button, Link} from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import CloseIcon from '@mui/icons-material/Close';
 import {useTheme} from "@mui/material/styles";
-import {useSnackbar} from "notistack"
 
 import { makeRequest } from '../requests';
-
 import Logo from '../components/Logo';
+
 
 const Daftar = () => {
   const {enqueueSnackbar} = useSnackbar();
@@ -67,8 +67,11 @@ const Daftar = () => {
         enqueueSnackbar("Daftar akun berhasil!", {variant : "success"})
         navigate("/");
       } catch(e) {
-        const errMsg = e.response.data.msg
-        enqueueSnackbar(errMsg ? errMsg : "Daftar akun gagal! Mohon coba lagi", {variant : "error"})
+        let errMsg = "Daftar akun gagal, mohon coba lagi"
+        if(e.response && e.response.data) {
+          errMsg = e.response.data.msg
+        }
+        enqueueSnackbar(errMsg, {variant : "error"})
       }
     }
   }

@@ -1,15 +1,29 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
+import {useSelector, useDispatch} from "react-redux"
+import {useSnackbar} from "notistack"
 
 import {Container, Typography, Box, Button} from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import Logo from '../components/Logo';
 import {useTheme} from "@mui/material/styles";
+
+import Logo from '../components/Logo';
+import { makeRequest } from '../requests';
+import {selectAuth, logout} from "../state/auth/authSlice"
 
 const Keluar = () => {
   const navigate = useNavigate()
   const theme = useTheme()
+  const dispatch = useDispatch();
+  const {enqueueSnackbar} = useSnackbar();
+
+  const handleLogout = () => {
+    makeRequest({url : "/logout"})
+    dispatch(logout())
+    enqueueSnackbar("Keluar berhasil!", {variant : "success"})
+    navigate("/")
+  }
 
   return (
     <Container fixed sx={{backgroundColor : theme.palette.primary.main, height : "100vh", minWidth : "100vw", display : "flex", flexDirection : "column", alignItems : "center", justifyContent : "center"}}>
@@ -28,7 +42,7 @@ const Keluar = () => {
           <Typography variant="body1" sx={{color : "white"}}>Anda yakin ingin keluar?</Typography>
         </Grid>
         <Grid sx={{flexBasis : "10%", display : "flex", alignItems : "center", justifyContent : "space-evenly", mt:2, width : "30%"}}>
-          <Button variant="contained" color = "primary" onClick={() => navigate("/")}>
+          <Button variant="contained" color = "primary" onClick={handleLogout}>
             <Typography sx={{color : "white", fontWeight : "600"}}>Ya</Typography>
           </Button>
           <Button variant="contained" color="secondary" onClick={() => navigate("/menu-utama")}>

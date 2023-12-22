@@ -1,9 +1,11 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
+
 import {Container, Typography, Box} from "@mui/material"
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Grid from "@mui/material/Unstable_Grid2"
 import {useTheme} from "@mui/material/styles";
+
 import Logo from '../components/Logo';
 
 const Error = ({status=404, msg="Halaman tidak ditemukan"}) => {

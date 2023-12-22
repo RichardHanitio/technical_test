@@ -1,15 +1,23 @@
-import React from 'react'
-import {useTheme} from "@mui/material/styles";
+import React, {useEffect} from 'react'
 import { useNavigate } from 'react-router-dom';
+import {useSelector, useDispatch} from "react-redux"
 
+import {useTheme} from "@mui/material/styles";
 import { Typography, Button, Container } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2"
 
 import Logo from '../components/Logo';
+import {selectAuth} from "../state/auth/authSlice"
 
 const Welcome = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const {isLoggedIn} = useSelector(selectAuth);
+
+  useEffect(() => {
+    isLoggedIn && navigate("/menu-utama")
+  }, [])
+
   return (
     <>
       <Container fixed sx={{backgroundColor : theme.palette.primary.main, minWidth : "100vw", height : "100vh", display : "flex", alignItems : "center", justifyContent : "center"}}>

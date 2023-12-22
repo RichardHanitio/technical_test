@@ -53,7 +53,6 @@ class UserController {
         user : user
       };
     } catch (err) {
-      console.log(err)
       if (err.code==='ER_DUP_ENTRY') {
         throw createCustomError("Gunakanlah ID yang lain", 500)
       }
@@ -84,7 +83,6 @@ class UserController {
         user : user
       }
     } catch (err) {
-      console.log(err)
       throw createCustomError("Masuk akun gagal", 500)
     }
   }

@@ -15,6 +15,7 @@ import Thankyou from "./routes/Thankyou"
 import Transfer from "./routes/Transfer"
 
 import {ThemeProvider, createTheme} from "@mui/material/styles"
+import ProtectedRoute from './routes/ProtectedRoute'
 
 const theme = createTheme({
   breakpoints : {
@@ -199,15 +200,47 @@ const theme = createTheme({
 const router = createBrowserRouter([
   { path : "/", element: <Welcome />},
   { path : "/daftar", element: <Daftar />},
-  { path : "/info-saldo", element: <InfoSaldo />},
-  { path : "/isi-saldo", element: <IsiSaldo />},
-  { path : "/keluar", element: <Keluar />},
+  { path : "/info-saldo", element: (
+    <ProtectedRoute redirectPath="/" msg="Masuk untuk dapat menuju halaman info saldo">
+      <InfoSaldo />
+    </ProtectedRoute>
+  )},
+  { path : "/isi-saldo", element: (
+    <ProtectedRoute redirectPath="/" msg="Masuk untuk dapat menuju halaman isi saldo">
+      <IsiSaldo />
+    </ProtectedRoute>
+  )},
+  { path : "/keluar", element: (
+    <ProtectedRoute redirectPath="/" msg="Masuk untuk dapat menuju halaman keluar">
+      <Keluar />
+    </ProtectedRoute>
+  )},
   { path : "/masuk", element: <Masuk />},
-  { path : "/menu-utama", element : <MenuUtama />},
-  { path : "/riwayat-transaksi", element : <RiwayatTransaksi />},
-  { path : "/tarik-dana", element: <TarikDana />},
-  { path : "/terima-kasih", element: <Thankyou />},
-  { path : "/transfer", element: <Transfer />},
+  { path : "/menu-utama", element : (
+    <ProtectedRoute redirectPath="/" msg="Masuk untuk dapat menuju halaman menu utama">
+      <MenuUtama />
+    </ProtectedRoute>
+  )},
+  { path : "/riwayat-transaksi", element : (
+    <ProtectedRoute redirectPath="/" msg="Masuk untuk dapat menuju halaman riwayat transaksi">
+      <RiwayatTransaksi />
+    </ProtectedRoute>
+  )},
+  { path : "/tarik-dana", element: (
+    <ProtectedRoute redirectPath="/" msg="Masuk untuk dapat menuju halaman tarik dana">
+      <TarikDana />
+    </ProtectedRoute>
+  )},
+  { path : "/terima-kasih", element: (
+    <ProtectedRoute redirectPath="/" msg="Masuk untuk dapat menuju halaman terima kasih">
+      <Thankyou />
+    </ProtectedRoute>
+  )},
+  { path : "/transfer", element: (
+    <ProtectedRoute redirectPath="/" msg="Masuk untuk dapat menuju halaman transfer">
+      <Transfer />
+    </ProtectedRoute>
+  )},
   { path : "*", element : <Error />}
 ])
 
