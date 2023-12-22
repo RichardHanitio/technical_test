@@ -22,7 +22,7 @@ const Thankyou = () => {
           <Logo width="220px" height="90px" imageSize="50px" orientation="horizontal" textVariant="h4"/>
         </Grid>
         <Grid sx={{flexBasis : "20%", display : "flex", alignItems : "center", justifyContent : "center", mt:2}}>
-          <Typography variant="h2" sx={{color : "white"}}>Terima kasih telah menggunakan layanan ATM online kami!</Typography>
+          <Typography variant="h2" sx={{color : "white", textAlign : "center"}}>Terima kasih telah menggunakan layanan ATM online kami!</Typography>
         </Grid>
         <Grid sx={{flexBasis : "10%", display : "flex", alignItems : "center", justifyContent : "center", mt:2}}>
           <Typography variant="body1" sx={{color : "white"}}>Apakah anda ingin melakukan transaksi lain?</Typography>

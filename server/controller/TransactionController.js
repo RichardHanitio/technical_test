@@ -42,6 +42,21 @@ class TransactionController {
     try {
       await connection.beginTransaction();
       
+      // cek apakah saldo cukup untuk melakukan transaksi
+      const [prevSumberSaldo] = await connection.execute(
+        "SELECT Saldo FROM Pengguna WHERE ID=?",
+        [idSumber]
+      );
+
+      const currSumberSaldo = parseFloat(prevSumberSaldo[0].Saldo) - parseFloat(jumlah);
+      
+      if (currSumberSaldo < 0) {
+        return {
+          status : 400,
+          msg : "Saldo anda tidak cukup untuk melakukan transaksi"
+        }
+      }
+
       const [insertRow] = await connection.execute(
         "INSERT INTO Transaksi (IDTransaksi, TanggalTransaksi, IDSumber, IDTujuan, TujuanTransaksi, Jumlah) VALUES (?,?,?,?,?,?)",
         [idTransaksi, new Date(), idSumber, idTujuan, tujuanTransaksi||'', jumlah]
@@ -49,13 +64,6 @@ class TransactionController {
 
       
       // update saldo pengirim
-      const [prevSumberSaldo] = await connection.execute(
-        "SELECT Saldo FROM Pengguna WHERE ID=?",
-        [idSumber]
-      );
-
-      const currSumberSaldo = parseFloat(prevSumberSaldo[0].Saldo) - parseFloat(jumlah);
-
       await connection.execute(
         "UPDATE Pengguna SET Saldo=CAST(? AS DECIMAL(18,2)) WHERE Pengguna.ID=?",
         [currSumberSaldo.toFixed(2), idSumber]
