@@ -39,7 +39,6 @@ class UserController {
         msg : "Pin kosong/salah"
       }
     }
-    //* add hashing pin here
     
     try {
       const [rows] = await this.pool.execute(
@@ -68,7 +67,6 @@ class UserController {
         msg : "Kredensial yang dimasukkan salah"
       }
     }
-    //* add hashing pin here
     try {
       const [user] = await this.getUserById(id)
       if (!user || user.pin!==pin) {
