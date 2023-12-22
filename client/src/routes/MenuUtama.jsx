@@ -49,7 +49,7 @@ const MenuUtama = () => {
         <Grid container spacing={5} sx={{width : "100%", height : "50%"}}>
           {
             menus.map((menu, idx) => (
-            <Grid xs={idx<3 ? 4 : 6} sx={{display : "flex", alignItems : "center", justifyContent : "center"}}>
+            <Grid xs={idx<3 ? 4 : 6} sx={{display : "flex", alignItems : "center", justifyContent : "center"}} key={menu.name}>
               <Box sx={{borderRadius : 3, height : "100%", width : idx<3 ? "100%" : "64%", backgroundColor : "#FFE1D1", display : "flex", alignItems : "center", justifyContent : "center", cursor : "pointer", textAlign : "center", "&:hover" : {
                 backgroundColor : "#FF8748",
                 color : "white"
