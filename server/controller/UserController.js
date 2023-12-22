@@ -69,6 +69,7 @@ class UserController {
     }
     try {
       const [user] = await this.getUserById(id)
+
       if (!user || user.pin!==pin) {
         return {
           status : 401,
