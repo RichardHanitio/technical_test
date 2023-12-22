@@ -28,12 +28,15 @@ router.post("/login", async(req, res, next) => {
         id : resp.user.id,
         nama : resp.user.nama
       }, process.env.SECRETKEY)
+      return res.status(resp.status).cookie("access_token", token, {
+        secure: true, 
+        sameSite : 'none',
+        maxAge : 1 * 60 * 60 * 1000
+      }).json(resp)
+    } else {
+      return res.status(resp.status).json(resp)
     }
-    res.status(resp.status).cookie("access_token", token, {
-      secure: true, 
-      sameSite : 'none',
-      maxAge : 1 * 60 * 60 * 1000
-    }).json(resp)
+    
   } catch (err) {
     next(err);
   }
