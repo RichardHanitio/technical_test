@@ -8,7 +8,7 @@ const userController = new UserController()
 const router = express.Router()
 
 router.post("/register", async(req, res, next) => {
-  const {id, nama, pin} = req.body.data;
+  const {id, nama, pin} = req.body;
   try {
     const resp = await userController.userRegistration(id, nama, pin);
     res.status(resp.status).json(resp)
